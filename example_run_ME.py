@@ -4,48 +4,41 @@ import numpy as np
 from src.ME import run_ME
 import os
 
-# ------- hyperparameters for the SiouxFalls network -------
-directory = "Data/Networks/SiouxFalls/"
-net_file = '{}SiouxFalls_net.tntp'.format(directory)
-trip_file = '{}SiouxFalls_trips (GA).tntp'.format(directory)
-node_file = '{}SiouxFalls_node.tntp'.format(directory)
-net_name = 'SiouxFalls'
+def run_example_ME(ME='ME-FOSC', network='SiouxFalls',downtown_factor_list=[1], demand_ratio_list = np.arange(0, 1.1, 0.1)):
 
-N1=10
-N2=500
-epsilon=0.001
-path_set_size=10
-mu_u=0.5
-mu_t = 1.5
-mu_p = 2.0
-if_linear_cost=True
-if_large_net=False
-# ------- hyperparameters for the SiouxFalls network -------
+    if network == 'SiouxFalls':
+        # ------- hyperparameters for the SiouxFalls network -------
+        directory = "Data/Networks/SiouxFalls/"
+        net_file = '{}SiouxFalls_net.tntp'.format(directory)
+        trip_file = '{}SiouxFalls_trips (GA).tntp'.format(directory)
+        node_file = '{}SiouxFalls_node.tntp'.format(directory)
+        net_name = 'SiouxFalls'
+        N1=10
+        N2=500
+        epsilon=0.001
+        path_set_size=10
+        mu_u=0.5
+        mu_t = 1.5
+        mu_p = 2.0
+        if_linear_cost=True
+        if_large_net=False
+    elif network == 'PGH':
+        # ------- hyperparameters for the Pittsburgh network -------
+        directory = "Data/Networks/Pittsburgh/"
+        net_file = '{}pitts_net_new_0716.tntp.txt'.format(directory)
+        trip_file = '{}pitts_trips_new_0716.tntp.txt'.format(directory)
+        node_file = None
+        net_name = 'PGH'
+        N1=10
+        N2=500
+        epsilon=0.001
+        path_set_size=15
+        mu_u = 0.5
+        mu_t = 1.5
+        mu_p = 2.0
+        if_linear_cost=False
+        if_large_net=True
 
-# ------- hyperparameters for the Pittsburgh network -------
-# directory = "Data/Networks/Pittsburgh/"
-# net_file = '{}pitts_net_new_0716.tntp.txt'.format(directory)
-# trip_file = '{}pitts_trips_new_0716.tntp.txt'.format(directory)
-# node_file = None
-# net_name = 'PGH'
-
-# N1=10
-# N2=500
-# epsilon=0.001
-# path_set_size=15
-# mu_u = 0.5
-# mu_t = 1.5
-# mu_p = 2.0
-
-# if_linear_cost=False
-# if_large_net=True
-# ------- hyperparameters for the Pittsburgh network -------
-
-demand_ratio_list = np.arange(0, 1.1, 0.1)
-# demand_ratio_list = [0.5]
-# ME_list = ['ME-FO', 'ME-SO', 'ME-FOSC', 'Baseline-SO', 'Baseline-UE']
-ME_list = ['ME-FO', 'ME-SO', 'Baseline-SO']
-for ME in ME_list: 
     if 'FO' in ME:
         FB = 'FO'
     else:
@@ -63,8 +56,7 @@ for ME in ME_list:
         else:
             if_baseline = 'SO'
     
-    # for downtown_factor in [1, 2]:
-    for downtown_factor in [1]:
+    for downtown_factor in downtown_factor_list:
         output_dir = "{}output/{}/mu_t_{}_mu_p_{}_downtown_{}/".format(directory, ME, mu_t, mu_p, downtown_factor)
         TTT_list, FTT_list, FC_list, path_flows_RH_list, path_TT_list, path_set_list = [], [], [], [], [], []
 
@@ -100,3 +92,8 @@ for ME in ME_list:
             pickle.dump(record, f)
             print(record)
             print('{}record of TTT_FTT_FC.pickle is saved.'.format(output_dir))
+
+if __name__ == '__main__':
+    ME_list = ['ME-FO', 'ME-SO', 'ME-FOSC', 'Baseline-SO', 'Baseline-UE']
+    for ME in ME_list:
+        run_example_ME(ME=ME, network='SiouxFalls')

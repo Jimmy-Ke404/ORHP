@@ -8,56 +8,50 @@ import networkx as nx
 import os
 from src.ORHP import run_SA_based_solution_algorithm
 from multiprocessing import Pool
+from functools import partial
 
-# ------- hyperparameters for the SiouxFalls network -------
-directory = "Data/Networks/SiouxFalls/"
-net_file = '{}SiouxFalls_net.tntp'.format(directory)
-trip_file = '{}SiouxFalls_trips (GA).tntp'.format(directory)
-node_file = '{}SiouxFalls_node.tntp'.format(directory)
-net_name = 'SiouxFalls'
-downtown_factor=1
+def run_ORHP_with_random_initializaiton(network, random_seed):
+    if network == 'SiouxFalls':
+        # ------- hyperparameters for the SiouxFalls network -------
+        directory = "Data/Networks/SiouxFalls/"
+        net_file = '{}SiouxFalls_net.tntp'.format(directory)
+        trip_file = '{}SiouxFalls_trips (GA).tntp'.format(directory)
+        node_file = '{}SiouxFalls_node.tntp'.format(directory)
+        net_name = 'SiouxFalls'
+        downtown_factor = 1
+        N1 = 10
+        N2 = 500
+        N3 = 50
+        path_set_size = 10
+        mu_u = 0.5
+        mu_t = 1.5
+        mu_p = 2.0
+        if_linear_cost = True
+        if_large_net = False
+        lr_info = [0.5, 1, 1]
+        omega_scale = 4
+        gamma = 0
+    elif network == 'PGH':
+        # ------- hyperparameters for the Pittsburgh network -------
+        directory = "Data/Networks/Pittsburgh/"
+        net_file = '{}pitts_net_new_0716.tntp.txt'.format(directory)
+        trip_file = '{}pitts_trips_new_0716.tntp.txt'.format(directory)
+        node_file = None
+        net_name = 'PGH'
+        downtown_factor = 1
+        N1 = 10
+        N2 = 500
+        N3 = 70
+        path_set_size = 15
+        mu_u = 0.5
+        mu_t = 1.5
+        mu_p = 2.0
+        if_linear_cost = False
+        if_large_net = True
+        lr_info = [0.01, 1, 1]
+        omega_scale = 0.1
+        gamma = 0
 
-N1=10
-N2=500
-N3=50
-epsilon=0.001
-path_set_size=10
-mu_u=0.5
-mu_t = 1.5
-mu_p = 2.0
-if_linear_cost=True
-if_large_net=False
-lr_info = [0.5, 1, 1]
-gamma_list = np.round(np.arange(0.1, 1.1, 0.1), 1)
-omega_scale = 4
-# ------- hyperparameters for the SiouxFalls network -------
-
-
-# ------- hyperparameters for the Pittsburgh network -------
-# directory = "Data/Networks/Pittsburgh/"
-# net_file = '{}pitts_net_new_0716.tntp.txt'.format(directory)
-# trip_file = '{}pitts_trips_new_0716.tntp.txt'.format(directory)
-# node_file = None
-# net_name = 'PGH'
-# downtown_factor=1
-
-# N1=10
-# N2=500
-# N3=70
-# epsilon=0.001
-# path_set_size=15
-# mu_u=0.5
-# mu_t = 1.5
-# mu_p = 2.0
-# if_linear_cost=False
-# if_large_net=True
-# lr_info = [0.01, 1, 1]
-# gamma_list = np.round(np.arange(0.1, 1.1, 0.2), 1)
-# omega_scale = 0.1
-# ------- hyperparameters for the Pittsburgh network -------
-
-def run_ORHP(random_seed):
-    gamma=0
     scheme="discriminatory subsidies"
     record = \
         run_SA_based_solution_algorithm(downtown_factor=downtown_factor, net_name=net_name,
@@ -79,13 +73,15 @@ def run_ORHP(random_seed):
             print('Results of ORHP are dumped into file: {}.'.format(file_name))
 
 if __name__ == '__main__':
-    # gamma_list = np.round(np.arange(0.1, 1.1, 0.1), 1)
-    # gamma_list = [0.0]
-    # seed_list=[0, 1, 2]
-    seed_list=[3, 4, 5]
+    # parameters for the run_ORHP_with_random_initializaiton function
+    network = 'SiouxFalls'
+    seed_list=[0, 1, 2, 3, 4]
+
+    # use parallel processes to distribute tasks with different random seeds
+    num_cpus = 2  # scale up if you have more cpus
     st_time = time.time()
-    num_cpus = 5
+    partial_run_ORHP = partial(run_ORHP_with_random_initializaiton, network=network)
     with Pool(num_cpus) as p:
-        print(p.map(run_ORHP, seed_list))
+        print(p.map(partial_run_ORHP, seed_list))
     end_time = time.time()
-    print(f'ORHP of {net_name} with gamma of {gamma_list} is done! Running time took {end_time-st_time} seconds.')
+    print(f'ORHP of {network} with random seeds of {seed_list} is done! Running time took {end_time-st_time} seconds.')
