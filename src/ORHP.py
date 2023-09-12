@@ -1,12 +1,9 @@
 from Network import Network
 import matplotlib.pyplot as plt
-# from scipy.optimize import linprog
 import numpy as np
 import time
 import pickle
 import sympy
-# import matlab
-# import matlab.engine
 import networkx as nx
 import os
 

@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, 'src')
 import time
 import pickle
 import numpy as np
@@ -7,8 +9,9 @@ import os
 from src.ORHP import run_SA_based_solution_algorithm
 from multiprocessing import Pool
 from functools import partial
+import argparse
 
-def run_ORHP(network, gamma):
+def run_ORHP(gamma, network=None):
     if network == 'SiouxFalls':
         # ------- hyperparameters for the SiouxFalls network -------
         directory = "Data/Networks/SiouxFalls/"
@@ -66,15 +69,23 @@ def run_ORHP(network, gamma):
             print('Results of ORHP are dumped into file: {}.'.format(file_name))
 
 if __name__ == '__main__':
-    # parameters for the run_ORHP function
-    network = 'SiouxFalls'
-    gamma_list = np.round(np.arange(0.1, 1.1, 0.1), 1)
+    network_list = ['SiouxFalls', 'PGH']  # supported networks
+
+    # parse arguments
+    parser = argparse.ArgumentParser(
+                    description='This script solves ORHP on top of ME-FOSC.')
+    parser.add_argument('network', choices=network_list,
+                        help=f'Choose a network from {network_list}')
+    parser.add_argument('--num_cpus', default=2,
+                        help='The number of CPUs used for task parallel.')
+    args = parser.parse_args()
 
     # use parallel processes to distribute tasks with different gammas
-    num_cpus = 2  # scale up if you have more cpus
+    gamma_list = np.round(np.arange(0.1, 1.1, 0.1), 1)
+    num_cpus = args.num_cpus  # scale up if you have more cpus
     st_time = time.time()
-    partial_run_ORHP = partial(run_ORHP, network=network)
+    partial_run_ORHP = partial(run_ORHP, network=args.network)
     with Pool(num_cpus) as p:
         p.map(partial_run_ORHP, gamma_list)
     end_time = time.time()
-    print(f'ORHP of {network} with gamma of {gamma_list} is done! Running time took {end_time-st_time} seconds.')
+    print(f'ORHP of {args.network} with gamma of {gamma_list} is done! Running time took {end_time-st_time} seconds.')

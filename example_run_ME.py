@@ -1,8 +1,10 @@
+import sys
+sys.path.insert(0, 'src')
 import pickle
-import os.path
 import numpy as np
 from src.ME import run_ME
 import os
+import argparse
 
 def run_example_ME(ME='ME-FOSC', network='SiouxFalls',downtown_factor_list=[1], demand_ratio_list = np.arange(0, 1.1, 0.1)):
 
@@ -94,6 +96,19 @@ def run_example_ME(ME='ME-FOSC', network='SiouxFalls',downtown_factor_list=[1], 
             print('{}record of TTT_FTT_FC.pickle is saved.'.format(output_dir))
 
 if __name__ == '__main__':
-    ME_list = ['ME-FO', 'ME-SO', 'ME-FOSC', 'Baseline-SO', 'Baseline-UE']
-    for ME in ME_list:
-        run_example_ME(ME=ME, network='SiouxFalls')
+    # supported parameters
+    ME_list = ['ME-FO', 'ME-SO', 'ME-FOSC', 'Baseline-SO', 'Baseline-UE']  # supported equilibria
+    network_list = ['SiouxFalls', 'PGH']  # supported networks
+
+    # parse arguments
+    parser = argparse.ArgumentParser(
+                    description='This script solves the UE, the SO, and various ME')
+    parser.add_argument('network', choices=network_list,
+                        help=f'Choose a network from {network_list}')
+    parser.add_argument('equilibrium_type', choices=ME_list,
+                        help=f'Choose a equilibrium from {ME_list}')
+    args = parser.parse_args()
+
+    # solve the requested equilibrium
+    run_example_ME(ME=args.equilibrium_type, network=args.network)
+    

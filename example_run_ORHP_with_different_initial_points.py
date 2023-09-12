@@ -1,6 +1,7 @@
+import sys
+sys.path.insert(0, 'src')
 import time
 import pickle
-import os.path
 import numpy as np
 import matplotlib.pyplot as plt
 import sympy
