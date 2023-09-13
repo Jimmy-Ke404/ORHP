@@ -7,7 +7,40 @@ import os
 import argparse
 
 def run_example_ME(ME='ME-FOSC', network='SiouxFalls',downtown_factor_list=[1], demand_ratio_list = np.arange(0, 1.1, 0.1)):
+    """
+    This function runs various network equilibria on a given network with different ride-hailing penatration rates.
 
+    Args:
+        ME (str): 
+            Mixed equilibrium type. Currently supported input values are as follows.
+            - 'ME-FO': Mixed equibrium of driving vehicles following UE and ride-hailing vehicles following FO.
+            - 'ME-SO': Mixed equibrium of driving vehicles following UE and ride-hailing vehicles following SO.
+            - 'ME-FOSC': Mixed equibrium of driving vehicles following UE and ride-hailing vehicles following FOSC.
+            - 'Baseline-SO': A baseline where all vehicles follow SO.
+            - 'Baseline-UE': A baseline where all vehicles follow UE.
+        network (str):
+            The network name. Currently supported networks are 'SiouxFalls' (i.e., the Sioux Falls network) 
+            and 'PGH' (i.e., the Pittsburgh network).
+        downtown_factor_list (a list of ints):
+            A list of downtown factor values to experiment on. The downtown factor measures the ratio of the 
+            ride-hailng penatration rate on links in the downtown area and the ride-hailing penatration rate on
+            the other links.
+        demand_ratio_list (a list of floats):
+            A list of ride-hailing demand ratios to experiment on. For example, a demand ratio of 0.2 means
+            the ride-hailing demands count 20% of total travel demands.
+
+            
+    The descriptions of hyperparameters are as follows:
+        N1: maximum steps of the algorithm 3 in the paper
+        N2: maximum steps of the algorithms 1 and 2 in the paper
+        epsilon: threshold of the gap function to stop the algorithm
+        path_set_size: the number of paths in the path set of each OD pair
+        mu_u: the value of time of the ride-hailing passengers
+        mu_t: the operating cost of travel time for the ride-hailing company
+        mu_p: the average price of ride-hailing per unit travel time
+        if_linear_cost: whether the link travel time function is linear
+        if_large_net: whether the network is large. If so, using an approximation method to find paths, and using enumeration otherwise
+    """
     if network == 'SiouxFalls':
         # ------- hyperparameters for the SiouxFalls network -------
         directory = "Data/Networks/SiouxFalls/"
@@ -15,7 +48,7 @@ def run_example_ME(ME='ME-FOSC', network='SiouxFalls',downtown_factor_list=[1], 
         trip_file = '{}SiouxFalls_trips (GA).tntp'.format(directory)
         node_file = '{}SiouxFalls_node.tntp'.format(directory)
         net_name = 'SiouxFalls'
-        N1=10
+        N1=10 
         N2=500
         epsilon=0.001
         path_set_size=10
@@ -63,6 +96,7 @@ def run_example_ME(ME='ME-FOSC', network='SiouxFalls',downtown_factor_list=[1], 
         TTT_list, FTT_list, FC_list, path_flows_RH_list, path_TT_list, path_set_list = [], [], [], [], [], []
 
         for demand_ratio in demand_ratio_list:
+            # run a ME with a demand ratio
             TTT, FTT, FC, path_flows_RH, path_TT, path_set = run_ME(downtown_factor=downtown_factor,
                             FB=FB, SC=SC, iteration_num1=N1, iteration_num2=N2,
                             epsilon=epsilon, output_dir=output_dir, net_file=net_file,

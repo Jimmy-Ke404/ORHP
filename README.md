@@ -1,6 +1,6 @@
 # Optimal Ride Hailing Pricing
 ## Introduction
-This repository implements algorithms, fleet travel behaviors, and a pricing scheme in our paper [Leveraging ride-hailing services for social good: Fleet optimal routing and system optimal pricing](https://www.sciencedirect.com/science/article/pii/S0968090X23002735) published on a top-tier transportation journal [Transportation Research Part C: Emerging Technologies](https://www.sciencedirect.com/journal/transportation-research-part-c-emerging-technologies). Experiments are conducted on two networks, including the Sioux Falls network and the Pittsburgh network.
+This repository implements algorithms, fleet travel behaviors, and a pricing scheme in our paper [Leveraging ride-hailing services for social good: Fleet optimal routing and system optimal pricing](https://www.sciencedirect.com/science/article/pii/S0968090X23002735) published on a top-tier transportation research journal [Transportation Research Part C: Emerging Technologies](https://www.sciencedirect.com/journal/transportation-research-part-c-emerging-technologies). Experiments are conducted on two networks, including the Sioux Falls network and the Pittsburgh network.
 
 <figure>
   <img src="Data/images_for_readme/networks.png" alt="networks">

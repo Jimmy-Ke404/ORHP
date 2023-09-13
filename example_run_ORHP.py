@@ -12,6 +12,35 @@ from functools import partial
 import argparse
 
 def run_ORHP(gamma, network=None):
+    """
+    This function solves optimal ride-haling pricing, which mitigates network congestion by inducing, using subsidies,
+    ride-hailing vehicles to alternative routes so as to relieve over-congested roads.
+
+    Args:
+        gamma (float, should be non-negative): 
+            A value measures tradeoff between total travel time reduction and subsidy cost. gamma=0 means the objective 
+            function tries to minimize the total travel time no matter how much the subsidy cost is. Larger gamma means 
+            less total travel time reduction and lower subsidy cost.
+        network (str):
+            The network name. Currently supported networks are 'SiouxFalls' (i.e., the Sioux Falls network) 
+            and 'PGH' (i.e., the Pittsburgh network).
+
+    The descriptions of hyperparameters are as follows:
+        downtown_factor: the downtown factor measures the ratio of the ride-hailng penatration rate on links in the 
+            downtown area and the ride-hailing penatration rate on the other links.
+        N1: maximum steps of the algorithm 3 in the paper
+        N2: maximum steps of the algorithms 1 and 2 in the paper
+        N3: maximum steps of the algorithm 4 in the paper
+        path_set_size: the number of paths in the path set of each OD pair
+        mu_u: the value of time of the ride-hailing passengers
+        mu_t: the operating cost of travel time for the ride-hailing company
+        mu_p: the average price of ride-hailing per unit travel time
+        if_linear_cost: whether the link travel time function is linear
+        if_large_net: whether the network is large. If so, using an approximation method to find paths, and using 
+            enumeration otherwise
+        lr_info: the learning rate is initialized as lr_info[0], and every lr_info[1] steps, the learning rate = 
+            learning rate / lr_info[2].
+    """
     if network == 'SiouxFalls':
         # ------- hyperparameters for the SiouxFalls network -------
         directory = "Data/Networks/SiouxFalls/"
@@ -50,6 +79,7 @@ def run_ORHP(gamma, network=None):
         lr_info = [0.01, 1, 1]
 
     scheme="discriminatory subsidies"
+    # solve optimal pricing using a sensitivity analysis-based method
     record = \
         run_SA_based_solution_algorithm(downtown_factor=downtown_factor, net_name=net_name,
             lr_info=lr_info, gamma=gamma, directory=directory, net_file=net_file,
