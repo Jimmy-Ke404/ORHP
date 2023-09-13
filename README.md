@@ -7,6 +7,7 @@ This repository implements algorithms, fleet travel behaviors, and a pricing sch
   <figcaption>Figure: Networks for experiments.</figcaption>
 </figure>
 
+
 This repository provides reusable code for practioners and students interested in network equilibria. Aside solving cutting-edge network equilibrium formulations in the paper, this repository implements solving classical network equilibria including the user equilibrium (UE) and the system optimum (SO).
 
 Moreover, this repository provides source code and data for researchers with research interests of ride-hailing, optimal pricing, vehicle routing, and network equilibrium. 
@@ -18,10 +19,12 @@ Firstly, we consider a mixed equilibrium of ride-hailing vehicles and driving ve
   <figcaption>Figure: Ride-haling fleet travel time reduction compared with the UE on the Sioux Falls network. The figure indicates the FOSC is able to reduce the fleet travel time on par with the FO which is optimal for the fleet.</figcaption>
 </figure>
 
+
 <figure>
   <img src="Data/images_for_readme/loaded unfairness of Sioux Falls network.png" alt="unfairness of Sioux Falls network">
   <figcaption>Figure: Unfairness among ride-hailing passengers on the Sioux Falls network. Loaded unfairness is the ratio of actual experienced travel time to the travel time of the fastest route for the same origin-destination pair. The figure shows the FOSC leads much less unfairness among ride-hailing passengers. In addition, FOSC provides the ride-hailing passengers who detour with monetary or credit compensations.</figcaption>
 </figure>
+
 
 On top of the mixed equilibrium of driving vehicles and ride-hailing vehicles, we proposed an optimal ride-hailing pricing scheme (ORHP) with subsidy from public agencies to intervene with ride-hailing companies (e.g., Uber and Lyft) aiming at mitigating congestion of the whole network (reducing total travel time of all vehicles), while considering ride-hailing service’s quality and profitability. Our experiments indicate ORHP is able to reduce total travel time by 16,813 hours with a subsidy cost of $38,701 on the Sioux Falls network. The following figure shows how ORHP makes the Sioux Falls network less congested.
 
@@ -29,6 +32,7 @@ On top of the mixed equilibrium of driving vehicles and ride-hailing vehicles, w
   <img src="Data/images_for_readme/ORHP.png" alt="ORHP">
   <figcaption>Figure: V/C ratios and subsidies for all links in the Sioux Falls network, when minimizing the total travel time. (a): V/C ratios measure congestion levels on links, and higher is more congested. (b): ORHP tends to assign subsidies to under-congested links near to over-congested links, so that vehicles are induced from over-congested links to under-congested links. Therefore, the total travel time is reduced by balancing link congestion. (c) and (d): By comparing two plots, we can find ORHP pushes the network towards the optimal state (i.e., ME-SO), and over-congested links are less congested under ORHP.  </figcaption>
 </figure>
+
 
 For more details, we refer to our paper [Leveraging ride-hailing services for social good: Fleet optimal routing and system optimal pricing](https://www.sciencedirect.com/science/article/pii/S0968090X23002735).
 
