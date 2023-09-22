@@ -12,6 +12,39 @@ from multiprocessing import Pool
 from functools import partial
 
 def run_ORHP_with_random_initializaiton(network, random_seed):
+    """
+    This function solves optimal ride-haling pricing with different random seeds to see the impacts of initial points. 
+
+    Args:
+        network (str):
+            The network name. Currently supported networks are 'SiouxFalls' (i.e., the Sioux Falls network) 
+            and 'PGH' (i.e., the Pittsburgh network).
+
+        random_seed (int): 
+            A random seed used to generate initial link-based subsidies.
+
+    The descriptions of hyperparameters are as follows:
+        downtown_factor: the downtown factor measures the ratio of the ride-hailng penatration rate on links in the 
+            downtown area and the ride-hailing penatration rate on the other links.
+        N1: maximum steps of the algorithm 3 in the paper
+        N2: maximum steps of the algorithms 1 and 2 in the paper
+        N3: maximum steps of the algorithm 4 in the paper
+        path_set_size: the number of paths in the path set of each OD pair
+        mu_u: the value of time of the ride-hailing passengers
+        mu_t: the operating cost of travel time for the ride-hailing company
+        mu_p: the average price of ride-hailing per unit travel time
+        if_linear_cost: whether the link travel time function is linear
+        if_large_net: whether the network is large. If so, using an approximation method to find paths, and using 
+            enumeration otherwise
+        lr_info: the learning rate is initialized as lr_info[0], and every lr_info[1] steps, the learning rate = 
+            learning rate / lr_info[2].
+        omega_scale: the maximum of the range of the initial subsidies. For example, omega_scale=4 means the initial
+            subsidies are sample randomly from [0, 4].
+        gamma: A value measures tradeoff between total travel time reduction and subsidy cost. gamma=0 means the objective 
+            function tries to minimize the total travel time no matter how much the subsidy cost is. Larger gamma means 
+            less total travel time reduction and lower subsidy cost.
+    """
+        
     if network == 'SiouxFalls':
         # ------- hyperparameters for the SiouxFalls network -------
         directory = "Data/Networks/SiouxFalls/"
